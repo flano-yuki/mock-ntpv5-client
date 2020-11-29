@@ -1,0 +1,59 @@
+# mock-ntpv5-client
+This is an experimental tool for survey of NTPv5
+
+## Introduction
+The IETF is beginning to standardize NTPv5.
+
+- [Network Time Protocol Version 5](https://tools.ietf.org/html/draft-mlichvar-ntp-ntpv5-00)
+
+I am interested in NTP ossification. So I survey how the currently deployed NTP server responds to NTPv5 packets.
+
+This repository has two tool
+- `ntpv4-5.go`: send NTPv4 format packet that version field is specified with 5
+- `ntpv5.go`: send NTPv5 format packet (draft-mlichvar-ntp-ntpv5-00)
+
+## How to Use
+Please enter the destination host name in the command line argument
+
+```
+go run ./ntpv5.go HOSTNAME
+```
+
+Outputs the version field of the received NTP packet
+
+```
+HOSTNAME response version: 5
+```
+
+## What these tool showed
+In the first step survey, I sent packets to public NTP servers in the world.
+
+these tools showed following results.
+
+### ntpv4-5.go: 
+- 25% response: timeout
+- 65% response: NTPv4 format packet that version field is specified with 5
+- 10% response: NTPv4 or NTPv3
+
+It shows that many servers are processing NTPv5 packets
+
+### ntpv5.go
+- 10% response: NTPv4 format packet that version field is specified with 5
+- 90% response: timeout
+
+The result depends on the date of Transmit Timestamp and the absence of Extension Field.
+
+In this test case we have added a dummy extension field.
+
+## Is this a problem?
+I'm not sure.
+
+I know we suffered from anomalous behavior in tcp-fast-open and TLS 1.3 deployments
+- https://mailarchive.ietf.org/arch/msg/tls/i9blmvG2BEPf1s1OJkenHknRw9c/
+- https://archive.nanog.org/sites/default/files/Paasch_Network_Support.pdf
+
+but, it may be not matter
+- This response is not a problem for the client, Because it can be filtered
+- It will be fixed as NTPv5 develops
+
+
