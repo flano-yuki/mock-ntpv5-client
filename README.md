@@ -1,5 +1,5 @@
 # mock-ntpv5-client
-This is an experimental tool for survey of NTPv5
+This is an experimental NTPV5 mock client for survey
 
 ## Introduction
 The IETF is beginning to standardize NTPv5.
