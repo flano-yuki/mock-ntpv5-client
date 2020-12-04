@@ -8,21 +8,25 @@ The IETF is beginning to standardize NTPv5.
 
 I am interested in NTP ossification. So I survey how the currently deployed NTP server responds to NTPv5 packets.
 
-This repository has two tool
-- `ntpv4-5.go`: send NTPv4 format packet that version field is specified with 5
-- `ntpv5.go`: send NTPv5 format packet (draft-mlichvar-ntp-ntpv5-00)
+This CLI has subcommands
+- `v4`: send nomal NTPv4 packet
+- `v4-ue`: Not yet implemented
+- `v4-5`: send NTPv4 format packet that version field is specified with 5
+- `v5`: send NTPv5 format packet (draft-mlichvar-ntp-ntpv5-00)
 
 ## How to Use
 Please enter the destination host name in the command line argument
 
 ```
-go run ./ntpv5.go HOSTNAME
+go run ./mock-client.go SUB-COMMAND HOSTNAME
 ```
 
 Outputs the version field of the received NTP packet
 
+Example:
 ```
-HOSTNAME response version: 5
+go run ./mock-client.go v4-5 pool.ntp.org
+pool.ntp.org response version: 5
 ```
 
 ## What these tool showed
