@@ -46,7 +46,7 @@ func main() {
 	}
 	defer conn.Close()
 	time.Sleep(time.Millisecond * 10)
-	conn.SetDeadline(time.Now().Add(2 * time.Second))
+	conn.SetDeadline(time.Now().Add(5 * time.Second))
 
 	// Biild NTPv4 Packet
 	sendBuf := bytes.NewBuffer([]byte{})
@@ -66,7 +66,8 @@ func main() {
 			0xe9,                     // precisiion (8)
 			0, 0, 0, 0,               // Root Delay
 			0, 0, 0, 1, // Root Dispersion
-			0x79, 0x75, 0x6b, 0x69, // Reference ID "yuki"
+      //0x79, 0x75, 0x6b, 0x69, // Reference ID "yuki"
+      0x0, 0x1, 0x2, 0x0, // Reference ID "yuki"
 			0, 0, 0, 0, 0, 0, 0, 0, // Reference Timestamp
 			0, 0, 0, 0, 0, 0, 0, 0, // Origin Timestamp
 			0, 0, 0, 0, 0, 0, 0, 0, // Receive Timestamp
@@ -82,9 +83,9 @@ func main() {
 		sendBuf.Write(b)
 		sendBuf.Write([]byte{0, 0, 0, 0})
 
-		if os.Args[1] == "v4-5" {
-			//TODO
-			//sendBuf.Write([]byte{0, 0, 0, 0})
+		if os.Args[1] == "v4-ue" {
+			sendBuf.Write([]byte{0x00, 0x02, 0, 16}) // type(16), length(16)
+			sendBuf.Write([]byte{1, 2, 3, 4, 5, 6, 7, 8}) // value
 		}
 
 	case "v5":
@@ -115,7 +116,7 @@ func main() {
 		sendBuf.Write([]byte{0, 0, 0, 0})
 
 		// Add Dummy Extension
-		sendBuf.Write([]byte{0, 10, 0, 4, 0, 0, 0, 1})
+	  sendBuf.Write([]byte{0, 10, 0, 8, 0, 0, 0, 1})
 	default:
 		flag.Usage()
 	}
