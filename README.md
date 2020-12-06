@@ -25,7 +25,7 @@ Outputs the version field of the received NTP packet
 
 Example:
 ```
-go run ./mock-client.go v4-5 pool.ntp.org
+$ go run ./mock-client.go v4-5 pool.ntp.org
 pool.ntp.org response version: 5
 ```
 
