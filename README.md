@@ -8,18 +8,18 @@ The IETF is beginning to standardize NTPv5.
 
 I am interested in NTP ossification. So I survey how the currently deployed NTP server responds to NTPv5 packets.
 
-This CLI has subcommands
-- `v4`: send nomal NTPv4 packet
-- `v4-ue`: Not yet implemented
-- `v4-5`: send NTPv4 format packet that version field is specified with 5
-- `v5`: send NTPv5 format packet (draft-mlichvar-ntp-ntpv5-00)
-
 ## How to Use
 Please enter the destination host name in the command line argument
 
 ```
 go run ./mock-client.go SUB-COMMAND HOSTNAME
 ```
+
+This CLI has subcommands
+- `v4`: send nomal NTPv4 packet
+- `v4-ue`: Not yet implemented
+- `v4-5`: send NTPv4 format packet that version field is specified with 5
+- `v5`: send NTPv5 format packet (draft-mlichvar-ntp-ntpv5-00)
 
 Outputs the version field of the received NTP packet
 
@@ -34,14 +34,14 @@ In the first step survey, I sent packets to public NTP servers in the world.
 
 these tools showed following results.
 
-### ntpv4-5.go: 
+### v4-5: 
 - 25% response: timeout
 - 65% response: NTPv4 format packet that version field is specified with 5
 - 10% response: NTPv4 or NTPv3
 
 It shows that many servers are processing NTPv5 packets
 
-### ntpv5.go
+### v5
 - 10% response: NTPv4 format packet that version field is specified with 5
 - 90% response: timeout
 
