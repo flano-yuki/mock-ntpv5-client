@@ -67,8 +67,7 @@ func main() {
 			0xe9,                     // precisiion (8)
 			0, 0, 0, 0,               // Root Delay
 			0, 0, 0, 1, // Root Dispersion
-			//0x79, 0x75, 0x6b, 0x69, // Reference ID "yuki"
-			0x0, 0x1, 0x2, 0x0, // Reference ID "yuki"
+			0x79, 0x75, 0x6b, 0x69, // Reference ID "yuki"
 		})
 
 		// Reference Timestamp
