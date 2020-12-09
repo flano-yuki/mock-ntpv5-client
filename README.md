@@ -16,8 +16,8 @@ go run ./mock-client.go SUB-COMMAND HOSTNAME
 ```
 
 This CLI has subcommands
-- `v4`: send nomal NTPv4 packet
-- `v4-ue`: Not yet implemented
+- `v4`: send normal NTPv4 packet
+- `v4-ue`: send NTPv4 packet with Unknown Extension
 - `v4-5`: send NTPv4 format packet that version field is specified with 5
 - `v5`: send NTPv5 format packet (draft-mlichvar-ntp-ntpv5-00)
 

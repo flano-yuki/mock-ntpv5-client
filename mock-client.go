@@ -84,8 +84,8 @@ func main() {
 		sendBuf.Write([]byte{0, 0, 0, 0})
 
 		if os.Args[1] == "v4-ue" {
-			sendBuf.Write([]byte{0x00, 0x02, 0, 16}) // type(16), length(16)
-			sendBuf.Write([]byte{1, 2, 3, 4, 5, 6, 7, 8}) // value
+			sendBuf.Write([]byte{0x0a, 0x0a, 0, 36}) // type(16), length(16)
+			sendBuf.Write([]byte{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}) // value
 		}
 
 	case "v5":
