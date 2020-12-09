@@ -15,10 +15,11 @@ func flagUsage() {
 	usageText := `go run ./mock-client.go COMMAND host
 
 COMMAND
-- v4    : Normal NTPv4 Packet
-- v4-ue : NTPv4 packet with unknown extension
-- v4-5  : NTPv4 packet that version field is 5
-- v5    : NTPv5 packet (draft-mlichvar-ntp-ntpv5-00)
+- v4     : Normal NTPv4 Packet
+- v4-ue  : NTPv4 packet with unknown extension
+- v4-neg : NTPv4 packet that reference timestamp is NTP5NTP5
+- v4-5   : NTPv4 packet that just version field is 5
+- v5     : NTPv5 packet (draft-mlichvar-ntp-ntpv5-00)
 
 HOST: target host
 `
@@ -51,7 +52,7 @@ func main() {
 	// Biild NTPv4 Packet
 	sendBuf := bytes.NewBuffer([]byte{})
 	switch os.Args[1] {
-	case "v4", "v4-ue", "v4-5":
+	case "v4", "v4-ue", "v4-neg", "v4-5":
 		version := byte(4)
 		mode := byte(3)
 
@@ -66,9 +67,18 @@ func main() {
 			0xe9,                     // precisiion (8)
 			0, 0, 0, 0,               // Root Delay
 			0, 0, 0, 1, // Root Dispersion
-      //0x79, 0x75, 0x6b, 0x69, // Reference ID "yuki"
-      0x0, 0x1, 0x2, 0x0, // Reference ID "yuki"
-			0, 0, 0, 0, 0, 0, 0, 0, // Reference Timestamp
+			//0x79, 0x75, 0x6b, 0x69, // Reference ID "yuki"
+			0x0, 0x1, 0x2, 0x0, // Reference ID "yuki"
+		})
+
+		// Reference Timestamp
+		if os.Args[1] == "v4-neg" {
+			sendBuf.Write([]byte{0x4E, 0x54, 0x50, 0x35, 0x4E, 0x54, 0x50, 0x35}) //"NTP5NTP5"
+		} else {
+			sendBuf.Write([]byte{0, 0, 0, 0, 0, 0, 0, 0})
+		}
+
+		sendBuf.Write([]byte{
 			0, 0, 0, 0, 0, 0, 0, 0, // Origin Timestamp
 			0, 0, 0, 0, 0, 0, 0, 0, // Receive Timestamp
 		})
@@ -84,8 +94,8 @@ func main() {
 		sendBuf.Write([]byte{0, 0, 0, 0})
 
 		if os.Args[1] == "v4-ue" {
-			sendBuf.Write([]byte{0x0a, 0x0a, 0, 36}) // type(16), length(16)
-			sendBuf.Write([]byte{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}) // value
+			sendBuf.Write([]byte{0x0a, 0x0a, 0, 36})                                                                              // type(16), length(16)
+			sendBuf.Write([]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}) // value
 		}
 
 	case "v5":
@@ -116,7 +126,7 @@ func main() {
 		sendBuf.Write([]byte{0, 0, 0, 0})
 
 		// Add Dummy Extension
-	  sendBuf.Write([]byte{0, 10, 0, 8, 0, 0, 0, 1})
+		sendBuf.Write([]byte{0, 10, 0, 8, 0, 0, 0, 1})
 	default:
 		flag.Usage()
 	}

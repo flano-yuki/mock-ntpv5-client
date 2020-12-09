@@ -18,8 +18,9 @@ go run ./mock-client.go SUB-COMMAND HOSTNAME
 This CLI has subcommands
 - `v4`: send normal NTPv4 packet
 - `v4-ue`: send NTPv4 packet with Unknown Extension
+- `v4-neg`: send NTPv4 packet that Reference Timestamp is "NTP5NTP5" (see [draft-mlichvar-ntp-ntpv5-01](https://tools.ietf.org/html/draft-mlichvar-ntp-ntpv5-01))
 - `v4-5`: send NTPv4 format packet that version field is specified with 5
-- `v5`: send NTPv5 format packet (draft-mlichvar-ntp-ntpv5-00)
+- `v5`: send NTPv5 format packet ([draft-mlichvar-ntp-ntpv5-00](https://tools.ietf.org/html/draft-mlichvar-ntp-ntpv5-00))
 
 Outputs the version field of the received NTP packet
 
@@ -41,7 +42,7 @@ these tools showed following results.
 
 It shows that many servers are processing NTPv5 packets
 
-### v5
+### v5:
 - 10% response: NTPv4 format packet that version field is specified with 5
 - 90% response: timeout
 
