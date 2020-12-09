@@ -35,6 +35,13 @@ In the first step survey, I sent packets to public NTP servers in the world.
 
 these tools showed following results.
 
+### v4-ue: 
+- 35% response: timeout
+- 75% response: NTPv4
+
+### v4-neg: 
+No problems found
+
 ### v4-5: 
 - 25% response: timeout
 - 65% response: NTPv4 format packet that version field is specified with 5
