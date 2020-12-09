@@ -68,4 +68,6 @@ but, it may be not matter
 - This response is not a problem for the client, Because it can be filtered
 - It will be fixed as NTPv5 develops
 
+*Postscript*
+[draft-mlichvar-ntp-ntpv5-01#section-8](https://tools.ietf.org/html/draft-mlichvar-ntp-ntpv5-01#section-8) describe this is not a problem in NTPv5.
 
