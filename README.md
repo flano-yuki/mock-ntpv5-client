@@ -39,6 +39,9 @@ these tools showed following results.
 - 35% response: timeout
 - 75% response: NTPv4
 
+Many responding servers ignored the unknown extension.
+One server just added the sent unknown extension to the response
+
 ### v4-neg: 
 No problems found
 
