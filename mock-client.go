@@ -5,53 +5,24 @@ import (
 	"encoding/binary"
 	"flag"
 	"fmt"
-	"log"
 	"net"
 	"os"
 	"time"
 )
 
-func flagUsage() {
-	usageText := `go run ./mock-client.go COMMAND host
-
-COMMAND
-- v4     : Normal NTPv4 Packet
-- v4-ue  : NTPv4 packet with unknown extension
-- v4-neg : NTPv4 packet that reference timestamp is NTP5NTP5
-- v4-5   : NTPv4 packet that just version field is 5
-- v5     : NTPv5 packet (draft-mlichvar-ntp-ntpv5-00)
-
-HOST: target host
-`
-	fmt.Fprintf(os.Stderr, "%s\n\n", usageText)
-}
-
-func main() {
-	flag.Usage = flagUsage
-
-	if len(os.Args) == 1 {
-		flag.Usage()
-		return
-	}
-
-	host := "localhost"
-	if len(os.Args) > 2 {
-		host = os.Args[2]
-	}
-
+func sendPacket(host string, subcommand string) error {
 	// udp set-up
 	conn, err := net.Dial("udp", host+":123")
 	if err != nil {
-		log.Fatalln(err)
-		os.Exit(0)
+		return err
 	}
 	defer conn.Close()
 	time.Sleep(time.Millisecond * 10)
-	conn.SetDeadline(time.Now().Add(5 * time.Second))
+	conn.SetDeadline(time.Now().Add(1 * time.Second))
 
 	// Biild NTPv4 Packet
 	sendBuf := bytes.NewBuffer([]byte{})
-	switch os.Args[1] {
+	switch subcommand {
 	case "v4", "v4-ue", "v4-neg", "v4-5":
 		version := byte(4)
 		mode := byte(3)
@@ -133,18 +104,54 @@ func main() {
 	// Send
 	_, err = conn.Write(sendBuf.Bytes())
 	if err != nil {
-		log.Fatalln(err)
-		os.Exit(0)
+		return err
 	}
 
 	recvBuf := make([]byte, 1024)
 	_, err = conn.Read(recvBuf)
 	if err != nil {
-		if err.(net.Error).Timeout() {
-			fmt.Printf("%s response version: timeout\n", host)
-		}
-		os.Exit(0)
+		return err
 	}
 
 	fmt.Printf("%s response version: %d\n", host, (int(recvBuf[0])>>3)&7)
+
+	return nil
+}
+
+func flagUsage() {
+	usageText := `go run ./mock-client.go COMMAND host
+
+COMMAND
+- v4     : Normal NTPv4 Packet
+- v4-ue  : NTPv4 packet with unknown extension
+- v4-neg : NTPv4 packet that reference timestamp is NTP5NTP5
+- v4-5   : NTPv4 packet that just version field is 5
+- v5     : NTPv5 packet (draft-mlichvar-ntp-ntpv5-00)
+
+HOST: target host
+`
+	fmt.Fprintf(os.Stderr, "%s\n\n", usageText)
+}
+
+func main() {
+	flag.Usage = flagUsage
+
+	if len(os.Args) == 1 {
+		flag.Usage()
+		return
+	}
+
+	host := "localhost"
+	if len(os.Args) > 2 {
+		host = os.Args[2]
+	}
+	subcommand := os.Args[1]
+	for i := 0; i < 3; i++ {
+		err := sendPacket(host, subcommand)
+		if err == nil {
+			break
+		} else if i == 2 {
+			fmt.Printf("%s: no response\n", host)
+		}
+	}
 }
